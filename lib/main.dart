@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
           iconSize: 30,
         )
       ]),
-      body: [Text('홈페이지0'), Text('샵페이지1')][tab],
+      body: [layout(), Text('샵페이지1')][tab],
       bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: false,
           showUnselectedLabels: false,
@@ -43,6 +43,18 @@ class _MyAppState extends State<MyApp> {
                 icon: Icon(Icons.shopping_bag_outlined), label: '샵')
           ]),
     );
+  }
+}
+
+class layout extends StatelessWidget {
+  const layout({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: Column(
+      children: [Image.asset("assets/images/cat.png", width: 500), Text('hi')],
+    ));
   }
 }
 

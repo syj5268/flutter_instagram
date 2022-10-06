@@ -20,6 +20,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text('Instagram'), actions: [
         IconButton(
           icon: Icon(Icons.favorite_border_outlined),
@@ -51,13 +52,48 @@ class layout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Column(
-      children: [Image.asset("assets/images/cat.png", width: 500), Text('hi')],
-    ));
+    return Column(
+      children: [
+        Container(
+            child: Column(
+          children: [
+            Image.asset(
+              "assets/images/cat.png",
+            ),
+            Container(
+                child: Column(
+              children: [Text('좋아요 100'), Text('글쓴이'), Text('글내용')],
+            )),
+          ],
+        )),
+        Container(
+            child: Column(
+          children: [
+            Image.asset(
+              "assets/images/cat.png",
+            ),
+            Container(
+                child: Column(
+              children: [Text('좋아요 100'), Text('글쓴이'), Text('글내용')],
+            )),
+          ],
+        )),
+        Container(
+            child: Column(
+          children: [
+            Image.asset(
+              "assets/images/cat.png",
+            ),
+            Container(
+                child: Column(
+              children: [Text('좋아요 100'), Text('글쓴이'), Text('글내용')],
+            )),
+          ],
+        )),
+      ],
+    );
   }
 }
-
 
 //동적인 UI 만드는법
 //1. state에 UI의 현재상태 저장, 즉, state에 var tab의 현재상태 저장

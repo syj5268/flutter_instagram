@@ -14,6 +14,6 @@ var theme = ThemeData(
         elevation: 1, //그림자 크기
         titleTextStyle: TextStyle(color: Colors.black, fontSize: 25),
         actionsIconTheme: IconThemeData(color: Colors.black)),
-    textTheme: TextTheme(bodyText2: TextStyle(color: Colors.red)));
+    textTheme: TextTheme(bodyText2: TextStyle(color: Colors.black)));
 
 var _var1; //다른 파일에서 변수 사용 중복 방지하고 싶을때

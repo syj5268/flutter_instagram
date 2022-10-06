@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
           iconSize: 30,
         )
       ]),
-      body: [layout(), Text('샵페이지1')][tab],
+      body: SingleChildScrollView(child: [layout(), Text('샵페이지1')][tab]),
       bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: false,
           showUnselectedLabels: false,
@@ -56,36 +56,46 @@ class layout extends StatelessWidget {
       children: [
         Container(
             child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.asset(
               "assets/images/cat.png",
             ),
             Container(
                 child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [Text('좋아요 100'), Text('글쓴이'), Text('글내용')],
             )),
           ],
         )),
         Container(
             child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.asset(
               "assets/images/cat.png",
             ),
             Container(
                 child: Column(
-              children: [Text('좋아요 100'), Text('글쓴이'), Text('글내용')],
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('좋아요 100'),
+                Text('글쓴이'),
+                Text('글내용'),
+              ],
             )),
           ],
         )),
         Container(
             child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.asset(
               "assets/images/cat.png",
             ),
             Container(
                 child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [Text('좋아요 100'), Text('글쓴이'), Text('글내용')],
             )),
           ],

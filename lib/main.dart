@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project_4/style.dart';
+//import 'package:flutter_project_4/style.dart';
 import './style.dart' as style; //경로
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter/rendering.dart';
 
 void main() {
   runApp(MaterialApp(theme: style.theme, home: MyApp()));
@@ -16,6 +19,24 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var tab = 0; //현재 탭의 모습
+  var data = [];
+
+  getData() async {
+    var result = await http
+        .get(Uri.parse('https://codingapple1.github.io/app/data.json'));
+    //if (result.statusCode == 200){}
+    var result2 = jsonDecode(result.body); //map 자료형
+    //print(result2);
+    setState(() {
+      data = result2;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState(); //위젯로드 될 때 실행
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,80 +49,68 @@ class _MyAppState extends State<MyApp> {
           iconSize: 30,
         )
       ]),
-      body: SingleChildScrollView(child: [layout(), Text('샵페이지1')][tab]),
+      body: [Home(data: data), Text('샵페이지')][tab],
       bottomNavigationBar: BottomNavigationBar(
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          onTap: (i) {
-            setState(() {
-              tab = i;
-            });
-          },
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined), label: '홈'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_bag_outlined), label: '샵')
-          ]),
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        onTap: (i) {
+          setState(() {
+            tab = i;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: '홈'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_bag_outlined), label: '샵')
+        ],
+      ),
     );
   }
 }
 
-class layout extends StatelessWidget {
-  const layout({super.key});
+class Home extends StatefulWidget {
+  const Home({Key? key, this.data})
+      : super(key: key); //부모가 보낸 state 등록은 첫 class
+  final data;
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  //state 사용은 둘째 class
+
+  var scroll = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scroll.addListener(() {
+      if (scroll.position.pixels == scroll.position.maxScrollExtent) {
+        print('같음');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
-              "assets/images/cat.png",
-            ),
-            Container(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text('좋아요 100'), Text('글쓴이'), Text('글내용')],
-            )),
-          ],
-        )),
-        Container(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
-              "assets/images/cat.png",
-            ),
-            Container(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('좋아요 100'),
-                Text('글쓴이'),
-                Text('글내용'),
-              ],
-            )),
-          ],
-        )),
-        Container(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
-              "assets/images/cat.png",
-            ),
-            Container(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text('좋아요 100'), Text('글쓴이'), Text('글내용')],
-            )),
-          ],
-        )),
-      ],
-    );
+    if (widget.data.isNotEmpty) {
+      return ListView.builder(
+          itemCount: 3,
+          controller: scroll,
+          itemBuilder: (c, i) {
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.network(widget.data[i]['image']),
+                  Text('좋아요 ${widget.data[i]['likes']}'),
+                  Text(widget.data[i]['date']),
+                  Text(widget.data[i]['content']),
+                ]);
+          });
+    } else {
+      return Text('로딩중');
+    }
   }
 }
 
@@ -109,3 +118,9 @@ class layout extends StatelessWidget {
 //1. state에 UI의 현재상태 저장, 즉, state에 var tab의 현재상태 저장
 //2. state에 따라 tab이 어떻게 보일지 작성
 //3. 유저가 쉽게 state 조작할 수 있게 button 등 만들기
+
+//서버
+//데이터 달라고하면 주는 프로그램
+//method : get/post 택 1
+//url
+

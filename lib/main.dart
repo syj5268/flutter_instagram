@@ -45,7 +45,10 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(title: Text('Instagram'), actions: [
         IconButton(
           icon: Icon(Icons.favorite_border_outlined),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (c) => Upload()));
+          },
           iconSize: 30,
         )
       ]),
@@ -87,7 +90,8 @@ class _HomeState extends State<Home> {
     super.initState();
     scroll.addListener(() {
       if (scroll.position.pixels == scroll.position.maxScrollExtent) {
-        print('같음');
+        print("같음");
+        //getData();
       }
     });
   }
@@ -111,6 +115,24 @@ class _HomeState extends State<Home> {
     } else {
       return Text('로딩중');
     }
+  }
+}
+
+class Upload extends StatelessWidget {
+  const Upload({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(),
+        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('이미지업로드화면'),
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context); //페이지 닫기
+              },
+              icon: Icon(Icons.close)),
+        ]));
   }
 }
 

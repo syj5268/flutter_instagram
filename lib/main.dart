@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MaterialApp(theme: style.theme, home: MyApp()));
@@ -57,9 +58,22 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  saveData() async {
+    var storage = await SharedPreferences.getInstance();
+    storage.setString('name', 'john');
+    storage.remove('name');
+    var map = {'age': 10};
+    storage.setString('map', jsonEncode(map));
+    var result = storage.getString('map') ?? '없는데요';
+    print(result);
+    print(jsonDecode(result)['age']);
+    //매번 server 요청하는게 아니라 이 함수 쓸 것!
+  }
+
   @override
   void initState() {
     super.initState(); //위젯로드 될 때 실행
+    saveData();
     getData();
   }
 

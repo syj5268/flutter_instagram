@@ -23,6 +23,28 @@ class _MyAppState extends State<MyApp> {
   var tab = 0; //현재 탭의 모습
   var data = [];
   var userImage;
+  var userContent;
+
+  addMyData() {
+    var myData = {
+      'id': data.length,
+      'image': userImage,
+      'likes': 100,
+      'date': 'March 1',
+      'content': userContent,
+      'liked': false,
+      'user': 'Sim'
+    };
+    setState(() {
+      data.insert(0, myData);
+    });
+  }
+
+  setUserContent(a) {
+    setState(() {
+      userContent = a;
+    });
+  }
 
   getData() async {
     var result = await http
@@ -53,14 +75,18 @@ class _MyAppState extends State<MyApp> {
             var image = await picker.pickImage(source: ImageSource.gallery);
             if (image != null) {
               setState(() {
-                userImage = File(image.path);
+                userImage = image.path;
               });
             }
 
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (c) => Upload(userImage: userImage)));
+                    builder: (c) => Upload(
+                          userImage: userImage,
+                          setUserContent: setUserContent,
+                          addMyData: addMyData,
+                        )));
           },
           iconSize: 30,
         )
@@ -141,17 +167,32 @@ class _HomeState extends State<Home> {
 }
 
 class Upload extends StatelessWidget {
-  const Upload({Key? key, this.userImage}) : super(key: key);
+  const Upload({Key? key, this.userImage, this.setUserContent, this.addMyData})
+      : super(key: key);
   final userImage;
+  final setUserContent;
+  final addMyData;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: (() {
+                  addMyData();
+                }),
+                icon: Icon(Icons.send))
+          ],
+        ),
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          //Image.file(userImage), //web은 지원 안된다
+          Image.network(userImage),
           Text('이미지업로드화면'),
-          TextField(),
+          TextField(
+            onChanged: (text) {
+              setUserContent(text);
+            },
+          ),
           IconButton(
               onPressed: () {
                 Navigator.pop(context); //페이지 닫기

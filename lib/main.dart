@@ -4,6 +4,8 @@ import './style.dart' as style; //경로
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/rendering.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 void main() {
   runApp(MaterialApp(theme: style.theme, home: MyApp()));
@@ -20,6 +22,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var tab = 0; //현재 탭의 모습
   var data = [];
+  var userImage;
 
   getData() async {
     var result = await http
@@ -45,9 +48,19 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(title: Text('Instagram'), actions: [
         IconButton(
           icon: Icon(Icons.favorite_border_outlined),
-          onPressed: () {
+          onPressed: () async {
+            var picker = ImagePicker();
+            var image = await picker.pickImage(source: ImageSource.gallery);
+            if (image != null) {
+              setState(() {
+                userImage = File(image.path);
+              });
+            }
+
             Navigator.push(
-                context, MaterialPageRoute(builder: (c) => Upload()));
+                context,
+                MaterialPageRoute(
+                    builder: (c) => Upload(userImage: userImage)));
           },
           iconSize: 30,
         )
@@ -85,13 +98,22 @@ class _HomeState extends State<Home> {
 
   var scroll = ScrollController();
 
+  getMore() async {
+    var result = await http
+        .get(Uri.parse('https://codingapple1.github.io/app/more1.json'));
+    setState(() {
+      widget.data.add(jsonDecode(result.body));
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+
     scroll.addListener(() {
       if (scroll.position.pixels == scroll.position.maxScrollExtent) {
         print("같음");
-        //getData();
+        getMore();
       }
     });
   }
@@ -100,7 +122,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     if (widget.data.isNotEmpty) {
       return ListView.builder(
-          itemCount: 3,
+          itemCount: widget.data.length,
           controller: scroll,
           itemBuilder: (c, i) {
             return Column(
@@ -119,14 +141,17 @@ class _HomeState extends State<Home> {
 }
 
 class Upload extends StatelessWidget {
-  const Upload({super.key});
+  const Upload({Key? key, this.userImage}) : super(key: key);
+  final userImage;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          //Image.file(userImage), //web은 지원 안된다
           Text('이미지업로드화면'),
+          TextField(),
           IconButton(
               onPressed: () {
                 Navigator.pop(context); //페이지 닫기

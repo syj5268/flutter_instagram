@@ -8,9 +8,12 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MaterialApp(theme: style.theme, home: MyApp()));
+  runApp(ChangeNotifierProvider(
+      create: (c) => Store1(), //state 등록
+      child: MaterialApp(theme: style.theme, home: MyApp())));
 }
 
 // var a = TextStyle(color: Colors.yellow); // 세부 글자 스타일 조정
@@ -226,12 +229,34 @@ class Upload extends StatelessWidget {
   }
 }
 
+class Store1 extends ChangeNotifier {
+  //state store
+  var name = 'John Kim';
+  var follower = 0;
+  changeName() {
+    name = 'John Park';
+    notifyListeners(); //재랜더링= setState
+  }
+}
+
 class Profile extends StatelessWidget {
   const Profile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(), body: Text('프로필페이지'));
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(context.watch<Store1>().name),
+        ),
+        body: Column(
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  context.read<Store1>().changeName();
+                },
+                child: Text('버튼'))
+          ],
+        ));
   }
 }
 

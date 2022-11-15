@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project_4/notification.dart';
 //import 'package:flutter_project_4/style.dart';
 import './style.dart' as style; //경로
 import 'package:http/http.dart' as http;
@@ -9,6 +10,7 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'notification.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -82,11 +84,18 @@ class _MyAppState extends State<MyApp> {
     super.initState(); //위젯로드 될 때 실행
     saveData();
     getData();
+    initNotification(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Text('+'),
+        onPressed: () {
+          showNotification();
+        },
+      ),
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text('Instagram'), actions: [
         IconButton(

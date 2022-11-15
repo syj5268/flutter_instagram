@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(MaterialApp(theme: style.theme, home: MyApp()));
@@ -169,6 +170,15 @@ class _HomeState extends State<Home> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image.network(widget.data[i]['image']),
+                  GestureDetector(
+                      child: Text(widget.data[i]['user']),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (c) =>
+                                    Profile())); //pageroutebuilder로도 가능
+                      }),
                   Text('좋아요 ${widget.data[i]['likes']}'),
                   Text(widget.data[i]['date']),
                   Text(widget.data[i]['content']),
@@ -213,6 +223,15 @@ class Upload extends StatelessWidget {
               },
               icon: Icon(Icons.close)),
         ]));
+  }
+}
+
+class Profile extends StatelessWidget {
+  const Profile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(), body: Text('프로필페이지'));
   }
 }
 

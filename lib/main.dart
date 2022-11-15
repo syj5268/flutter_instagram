@@ -262,8 +262,19 @@ class Store2 extends ChangeNotifier {
   var name = 'John Kim';
 }
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({super.key});
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<Store1>().getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -271,25 +282,43 @@ class Profile extends StatelessWidget {
         appBar: AppBar(
           title: Text(context.watch<Store2>().name),
         ),
-        body: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.grey,
-          ),
-          Text('팔로워 ${context.watch<Store1>().follower}명'),
-          ElevatedButton(
-              onPressed: () {
-                context.read<Store1>().addFollower();
-              },
-              child: Text('팔로우')),
-          ElevatedButton(
-            onPressed: () {
-              context.read<Store1>().getData();
-              //Image.network(context.watch<Store1>().profileImage[0]);
-            },
-            child: Text('사진가져오기'),
-          ),
-        ]));
+        body: CustomScrollView(
+          //scroll 문제해결
+          slivers: [
+            SliverToBoxAdapter(child: ProfileHeader()),
+            SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                  (c, i) => Container(
+                      child: Image.network(
+                          context.watch<Store1>().profileImage[i])),
+                  childCount: context.watch<Store1>().profileImage.length),
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+            ),
+          ],
+        ));
+  }
+}
+
+class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+      CircleAvatar(
+        radius: 30,
+        backgroundColor: Colors.grey,
+      ),
+      Text('팔로워 ${context.watch<Store1>().follower}명'),
+      ElevatedButton(
+          onPressed: () {
+            context.read<Store1>().addFollower();
+          },
+          child: Text('팔로우')),
+    ]);
   }
 }
 
